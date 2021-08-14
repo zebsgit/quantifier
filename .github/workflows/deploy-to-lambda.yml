@@ -30,7 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: compress
       run: |
-        zip -r app.zip ./app
+        zip -r quantifier.zip .
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -38,6 +38,6 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
     - name: UploadCodeToLambda
-      run: aws lambda update-function-code --function-name  etl_job --zip-file app.zip
+      run: aws lambda update-function-code --function-name  etl_job --zip-file fileb://quantifier.zip
       
 

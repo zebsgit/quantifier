@@ -28,10 +28,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install --target ./package -r requirements.txt; fi
-        zip -r my-deployment-package.zip ./package
+        zip -r quantifier.zip ./package
     - name: compress
       run: |
-        zip -g my-deployment-package.zip ./app
+        zip -g quantifier.zip ./app
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:

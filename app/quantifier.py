@@ -1,12 +1,14 @@
 from os import error
+from datetime import date
 import pandas as pd
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
+import s3fs
 
 class Quantifier:
-    def __init__(self, filename = None):
+    def __init__(self, filename):
         self.path = Path(__file__).parent
-        self.filename = filename if filename else self.path / '../data/data.sql'
+        self.filename = filename
         
     def ExtractDomain(self, url):
         pr = urlparse(url)
@@ -24,15 +26,22 @@ class Quantifier:
     
     def CalculateRevenue(self, product_list):
         revenue = 0
-        if isinstance(product_list, str):
-            products = product_list.split(',')
-            for product in products:
-                attributes = product.split(';')
-                if len(attributes)>3:
-                    revenue += float(product.split(';')[3]) * int(product.split(';')[2])
-        if revenue == 0:
-            return
-        return revenue
+        try:
+            if isinstance(product_list, str):
+                products = product_list.split(',')
+                for product in products:
+                    try:
+                        attributes = product.split(';')
+                        if len(attributes)>3:
+                            revenue += float(product.split(';')[3]) * int(product.split(';')[2])
+                    except:
+                        print('error')
+        except:
+            print('error processing data')
+        finally:
+            if revenue == 0:
+                return
+            return revenue
     
     def ReadFile(self):
         try:
@@ -56,12 +65,12 @@ class Quantifier:
         df = df.groupby('ip',as_index=False).agg(lambda x: list(x[x.notna()]))
         df = df[['referrer','product_list']]
         df = df.apply(lambda x: x.apply(pd.Series).stack())
-        df['search_engine_domain']= df['referrer'].apply(self.ExtractDomain)
-        df['search_keyword']= df['referrer'].apply(self.ExtractSearchKey)
-        df['revenue'] = df['product_list'].apply(self.CalculateRevenue) 
-        df = df[['search_engine_domain','search_keyword','revenue']] 
-        df = df.dropna().groupby(['search_engine_domain','search_keyword'],as_index=False ).sum()
-        return df.sort_values(by='revenue',ascending=False)
+        df['Search Engine Domain']= df['referrer'].apply(self.ExtractDomain)
+        df['Search Keyword']= df['referrer'].apply(self.ExtractSearchKey)
+        df['Revenue'] = df['product_list'].apply(self.CalculateRevenue) 
+        df = df[['Search Engine Domain','Search Keyword','Revenue']] 
+        df = df.dropna().groupby(['Search Engine Domain','Search Keyword'],as_index=False ).sum()
+        return df.sort_values(by='Revenue',ascending=False)
     
     def ExtractSearchKey(self, url):
         pr = urlparse(url)
@@ -77,7 +86,9 @@ class Quantifier:
         
     def WriteToCSV(self, output):
         try:
-            output.to_csv(self.path / '../output/SearchKeywordPerformance.tab', sep='\t', index =False)
+            dt = date.today().strftime("%Y-%m-%d")
+            print('s3://zebtest/{}_SearchKeywordPerformance.tab'.format(dt))
+            output.to_csv('s3://zebtest/{}_SearchKeywordPerformance.tab'.format(dt), sep='\t', index =False)
         except Exception as e:
             raise Exception("Failed writing error file {}".format(e))
 

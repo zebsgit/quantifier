@@ -37,18 +37,6 @@ def process(file):
         raise
         print('Job completed with errors {}'.format(e))
 
-# if __name__ == "__main__":
-#   args = parse_arguments()
-#   process(args.file)
-
-event =  {"Records": 
-[{"eventVersion": "2.1", 
-"eventSource": "aws:s3", 
-"awsRegion": "us-east-1", 
-"s3": {"s3SchemaVersion": "1.0",
-"bucket": {"name": "zebtest"}, 
-"object": {"key": "data/data.sql"}}}]}
-
-context = {}
-
-lambda_handler(event, context)
+if __name__ == "__main__":
+  args = parse_arguments()
+  process(args.file)

@@ -33,7 +33,7 @@ class TestModule(unittest.TestCase):
             'http://www.esshopzilla.com/product/?pid=as2323','http://www.google.com'),None)
 
     def test_transform_data(self):
-        testQuantifier = Quantifier("./data/data.sql")
+        testQuantifier = Quantifier("./data/test_data.sql")
         df1 = testQuantifier.ReadFile()
         d1= {'Search Engine Domain': ['bing.com','google.com','bing.com'], 
             'Search Keyword': ['galaxy','ipod','zune'], 

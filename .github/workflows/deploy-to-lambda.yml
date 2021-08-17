@@ -31,7 +31,6 @@ jobs:
         zip -r my-deployment-package.zip ./package
     - name: compress
       run: |
-        cd ..
         zip -g my-deployment-package.zip ./app
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1

@@ -33,7 +33,7 @@ jobs:
         zip -r ../quantifier.zip .
         cd ..
     - name: Run tests
-    - run: | 
+      run: | 
         python -m unittest discover
     - name: compress
       run: |

@@ -25,10 +25,11 @@ def parse_arguments():
     parser.add_argument("-o", nargs='?', default=None, help="specify output file path")
     return parser.parse_args()
   
-def process(input,output):
+def process(input,output=None):
     """Function to process the data
     Args:
-        file (string): file name 
+        input (string): input file 
+        output (string): output file
     Raises:
         Exception: Returns a message with error description
     """

@@ -4,33 +4,40 @@ from urllib.parse import unquote_plus
 
 def lambda_handler(event, context):
     """
-    Accepts an action and a number, performs the specified action on the number,
-    and returns the result.
-
-    :param event: The event dict that contains the parameters sent when the function
-                  is invoked.
+    AWS Lambda function handler
+    :param event: 
     :param context: The context in which the function is called.
-    :return: The result of the specified action.
     """
     print('Event: %s', event)
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     file = 's3://{}/{}'.format(bucket,key)
     process(file)
+    return
 
 def parse_arguments():
+    """Function to parse argument from command line
+    Returns:
+        object: argument parser object
+    """
     parser = ArgumentParser()
-    parser.add_argument("--file", nargs='?', default=None, help="specify file path")
+    parser.add_argument("-i", nargs='?', default=None, help="specify input file path")
+    parser.add_argument("-o", nargs='?', default=None, help="specify output file path")
     return parser.parse_args()
   
-def process(file):
+def process(input,output):
+    """Function to process the data
+    Args:
+        file (string): file name 
+    Raises:
+        Exception: Returns a message with error description
+    """
     try:
-        revenueQuantifier = Quantifier(file)
+        revenueQuantifier = Quantifier(input, output)
         data = revenueQuantifier.ReadFile()
         if data.empty:
           raise Exception('No data in input file')
         transformed_data = revenueQuantifier.TransformData(data)
-        print(transformed_data)
         revenueQuantifier.WriteToCSV(transformed_data)
         print('Job completed successfully')
     except Exception as e:
@@ -39,4 +46,4 @@ def process(file):
 
 if __name__ == "__main__":
   args = parse_arguments()
-  process(args.file)
+  process(args.i,args.o)

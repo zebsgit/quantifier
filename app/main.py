@@ -1,5 +1,6 @@
 from  quantifier import Quantifier
 from argparse import ArgumentParser
+from urllib.parse import unquote_plus
 
 def lambda_handler(event, context):
     """
@@ -13,7 +14,7 @@ def lambda_handler(event, context):
     """
     print('Event: %s', event)
     bucket = event['Records'][0]['s3']['bucket']['name']
-    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+    key = unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     file = 's3://{}/{}'.format(bucket,key)
     process(filter)
 

@@ -31,7 +31,7 @@ jobs:
         zip -r quantifier.zip ./package
     - name: compress
       run: |
-        zip -g quantifier.zip ./app
+        zip -r quantifier.zip ./app
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:

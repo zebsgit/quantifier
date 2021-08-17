@@ -16,7 +16,7 @@ def lambda_handler(event, context):
     bucket = event['Records'][0]['s3']['bucket']['name']
     key = unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
     file = 's3://{}/{}'.format(bucket,key)
-    process(filter)
+    process(file)
 
 def parse_arguments():
     parser = ArgumentParser()
@@ -40,3 +40,15 @@ def process(file):
 # if __name__ == "__main__":
 #   args = parse_arguments()
 #   process(args.file)
+
+event =  {"Records": 
+[{"eventVersion": "2.1", 
+"eventSource": "aws:s3", 
+"awsRegion": "us-east-1", 
+"s3": {"s3SchemaVersion": "1.0",
+"bucket": {"name": "zebtest"}, 
+"object": {"key": "data/data.sql"}}}]}
+
+context = {}
+
+lambda_handler(event, context)

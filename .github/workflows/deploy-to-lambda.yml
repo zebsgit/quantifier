@@ -28,7 +28,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install --target ./package -r requirements.txt; fi
-        zip -r quantifier.zip ./package
+        cd package
+        zip -r ../quantifier.zip .
+        cd ..
     - name: compress
       run: |
         cd app
